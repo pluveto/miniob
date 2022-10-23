@@ -74,9 +74,13 @@ bool is_exit_command(const char *cmd) {
 
 int init_unix_sock(const char *unix_sock_path)
 {
+  if(access(unix_sock_path, F_OK) != 0) {
+    fprintf(stderr, "unable to access file %s, check if it exists: %s\n", unix_sock_path, strerror(errno));
+    return -1;
+  }
   int sockfd = socket(PF_UNIX, SOCK_STREAM, 0);
   if (sockfd < 0) {
-    fprintf(stderr, "failed to create unix socket. %s", strerror(errno));
+    fprintf(stderr, "failed to create unix socket. %s\n", strerror(errno));
     return -1;
   }
 
